@@ -20,6 +20,7 @@ public class AutonomousCar {
         System.out.println("What's the distance to the obstacle? ");
         // distance is the input from the user
         double distance = scanner.nextDouble();
+        scanner.close();
 
         // default function block
         FunctionBlock fb = fis.getFunctionBlock(null);
