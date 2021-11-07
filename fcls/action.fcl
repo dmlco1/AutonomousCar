@@ -1,0 +1,40 @@
+FUNCTION_BLOCK action
+
+VAR_INPUT
+    velocity : REAL;
+    distance : REAL;
+END_VAR
+VAR_OUTPUT
+    execute : REAL;
+END_VAR
+
+FUZZIFY velocity
+    TERM low := (40, 1) (50, 0.7) (60, 0.2) (70, 0) (80, 0);
+    TERM average := (40, 0) (50, 0.8) (60, 1) (70, 0.2) (80, 0);
+    TERM high := (40, 0) (50, 0) (60, 0.1) (70, 0.7) (80, 1);
+END_FUZZIFY
+
+FUZZIFY distance
+    TERM short := (10, 1) (15, 0.8) (20, 0) (30, 0) (40, 0);
+    TERM average := (10, 0) (15, 0.2) (20, 1) (30, 0.1) (40, 0);
+    TERM big := (10, 0) (15, 0) (20, 0) (30, 0.6) (40, 1);
+END_FUZZIFY
+
+DEFUZZIFY execute
+    TERM accelerate := 0;
+    TERM maintain := 1;
+    TERM break := 2;
+    METHOD : COGS;
+    DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+    AND : PROD;
+    OR : BSUM;
+    ACT : MIN;
+    ACCU : MAX;
+    RULE 1 : IF velocity IS high AND distance IS short THEN execute IS break;
+    RULE 2 : IF velocity IS low AND distance IS big THEN execute IS accelerate;
+    RULE 3 : IF velocity IS average OR distance IS average THEN execute IS maintain;
+END_RULEBLOCK
+END_FUNCTION_BLOCK
